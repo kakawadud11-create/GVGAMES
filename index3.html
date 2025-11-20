@@ -1,0 +1,3421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GV Games - Sua Loja de Jogos Digitais</title>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <!-- QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- Meta Tags para SEO e Redes Sociais -->
+    <meta name="description" content="GV Games - Sua loja de jogos digitais para PS4, PS5 e Xbox. Compre mídias primárias e secundárias com os melhores preços e entrega em no máximo 24hrs.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.seusite.com/">
+    <meta property="og:title" content="GV Games - Sua Loja de Jogos Digitais">
+    <meta property="og:description" content="Compre jogos digitais para PS4, PS5 e Xbox com os melhores preços.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=2071&auto=format&fit=crop">
+
+    <style>
+        /* --- VARIÁVEIS DE COR E ESTILO --- */
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #222;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-gold: #d4af37;
+            --accent-gold-hover: #b8860b;
+            --border-color: #333;
+            --font-family: 'Poppins', sans-serif;
+            --error-color: #e53935;
+            --success-color: #43a047;
+            --warning-color: #ff9800;
+        }
+
+        /* --- ESTILOS GLOBAIS --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        h1, h2, h3 {
+            font-weight: 600;
+            color: var(--accent-gold);
+        }
+
+        a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--accent-gold);
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--accent-gold);
+            color: var(--bg-primary);
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            border: none;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-gold-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--accent-gold);
+            color: var(--bg-primary);
+        }
+
+        /* --- NOTIFICAÇÕES TOAST --- */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 3000;
+        }
+
+        .toast {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--accent-gold);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+            min-width: 300px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.success {
+            border-left-color: var(--success-color);
+        }
+
+        .toast.error {
+            border-left-color: var(--error-color);
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning-color);
+        }
+
+        .toast i {
+            font-size: 1.2rem;
+        }
+
+        .toast.success i {
+            color: var(--success-color);
+        }
+
+        .toast.error i {
+            color: var(--error-color);
+        }
+
+        .toast.warning i {
+            color: var(--warning-color);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* --- LOADING SPINNER --- */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* --- HEADER --- */
+        .main-header {
+            background-color: var(--bg-secondary);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        .main-nav ul {
+            display: flex;
+            gap: 25px;
+        }
+
+        .main-nav a {
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 35px 8px 15px;
+            border-radius: 25px;
+            width: 200px;
+            transition: width 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            width: 250px;
+        }
+
+        .search-bar i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .cart-icon, .user-icon, .wishlist-icon {
+            font-size: 1.3rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .cart-count, .wishlist-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--accent-gold);
+            color: var(--bg-primary);
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 5px;
+            border-radius: 50%;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .user-logged {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 10px;
+            background-color: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .user-logged .btn-logout {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .user-logged .btn-logout:hover {
+            color: var(--error-color);
+        }
+
+        /* --- PÁGINAS CONTEÚDO --- */
+        .page-content {
+            display: none;
+            padding: 40px 0;
+            min-height: calc(100vh - 200px);
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        /* --- HOME PAGE --- */
+        .hero-banner {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=2071&auto=format&fit=crop') center/cover;
+            height: 60vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 40px;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background-color: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+        }
+
+        /* --- CATÁLOGO --- */
+        .catalog-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 8px 15px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background-color: var(--accent-gold);
+            color: var(--bg-primary);
+            border-color: var(--accent-gold);
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .game-card {
+            background-color: var(--bg-secondary);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .game-card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .platform-badge {
+            display: inline-block;
+            background-color: var(--bg-card);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .game-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .game-rating .stars {
+            color: var(--accent-gold);
+            margin-right: 8px;
+        }
+
+        .game-rating .rating-value {
+            color: var(--text-secondary);
+        }
+
+        .game-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .wishlist-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .wishlist-btn:hover, .wishlist-btn.in-wishlist {
+            color: var(--error-color);
+        }
+
+        .game-prices {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 15px;
+        }
+
+        .price-group {
+            text-align: center;
+        }
+
+        .price-group p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .price-group span {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+        }
+
+        .buy-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .buy-buttons .btn {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        /* --- PÁGINA DE DETALHES DO JOGO --- */
+        .game-detail-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .game-detail-image {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .game-detail-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .game-detail-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-detail-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .game-detail-info .platform-badge {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .game-detail-info p {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+
+        .game-detail-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .game-detail-rating .stars {
+            color: var(--accent-gold);
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        .game-detail-rating .rating-value {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        .game-detail-rating .rating-count {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-left: 10px;
+        }
+
+        .game-detail-prices {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .game-detail-price {
+            flex: 1;
+            background-color: var(--bg-card);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .game-detail-price h4 {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .game-detail-price .price {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+        }
+
+        .game-detail-actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .game-detail-actions .btn {
+            flex: 1;
+        }
+
+        .game-detail-actions .wishlist-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+        }
+
+        /* --- SEÇÃO DE AVALIAÇÕES --- */
+        .reviews-section {
+            background-color: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 40px;
+        }
+
+        .reviews-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .reviews-header h3 {
+            font-size: 1.8rem;
+        }
+
+        .add-review-btn {
+            padding: 8px 15px;
+            background-color: var(--accent-gold);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-review-btn:hover {
+            background-color: var(--accent-gold-hover);
+        }
+
+        .reviews-list {
+            margin-bottom: 30px;
+        }
+
+        .review-item {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .review-author {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .review-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .review-rating {
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+        }
+
+        .review-text {
+            color: var(--text-secondary);
+        }
+
+        .review-form {
+            background-color: var(--bg-card);
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .review-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: var(--text-primary);
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        .form-group.error input, .form-group.error textarea {
+            border-color: var(--error-color);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        .rating-input {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .rating-input .star {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .rating-input .star:hover, .rating-input .star.active {
+            color: var(--accent-gold);
+        }
+
+        /* --- PÁGINA LISTA DE DESEJOS --- */
+        .wishlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .wishlist-empty {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .wishlist-empty i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+
+        /* --- COMO FUNCIONA --- */
+        .how-it-works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .account-type {
+            background-color: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 10px;
+            border-left: 5px solid var(--accent-gold);
+        }
+
+        .account-type h3 {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .account-type ul {
+            list-style: disc;
+            padding-left: 20px;
+            color: var(--text-secondary);
+        }
+
+        .account-type ul li {
+            margin-bottom: 10px;
+        }
+
+        /* --- CARRINHO --- */
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .cart-table th, .cart-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-table th {
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .cart-item-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cart-item-info img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .cart-summary {
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        .cart-summary h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .cart-summary p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .cart-summary span {
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        /* --- CHECKOUT --- */
+        .checkout-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .checkout-form, .order-summary {
+            background-color: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .order-summary .cart-table {
+            margin-top: 0;
+        }
+        
+        /* --- PÁGINA PAGAMENTO PIX --- */
+        .pix-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--bg-secondary);
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .pix-qr-code {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        #qrcode img {
+            display: block;
+        }
+
+        .pix-details {
+            background-color: var(--bg-card);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .pix-details h3 {
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .pix-details p {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        .pix-details span {
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .pix-timer {
+            margin: 20px 0;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .pix-timer span {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .pix-timer.expired {
+            color: var(--error-color);
+        }
+
+        .pix-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .pix-pix-key {
+            background-color: var(--bg-card);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .pix-pix-key span {
+            font-family: monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: var(--accent-gold);
+            color: var(--bg-primary);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-gold-hover);
+        }
+
+        /* --- PÁGINA MINHA CONTA --- */
+        .account-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        .account-profile {
+            background-color: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .account-profile i {
+            font-size: 4rem;
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+        }
+
+        .account-profile h3 {
+            margin-bottom: 10px;
+        }
+
+        .account-orders {
+            background-color: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .orders-table th, .orders-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .orders-table th {
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .order-items-list {
+            font-size: 0.9rem;
+        }
+
+        .order-items-list li {
+            margin-bottom: 5px;
+        }
+
+        .order-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .order-status.pending {
+    background-color: var(--warning-color);
+    color: white;
+        }
+
+        .order-status.paid {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        /* --- INSTRUÇÕES PÓS-COMPRA --- */
+        .instructions-container {
+            background-color: var(--bg-secondary);
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--accent-gold);
+            margin-top: 30px;
+        }
+
+        .instructions-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .instructions-steps {
+            counter-reset: step-counter;
+        }
+
+        .step {
+            margin-bottom: 30px;
+            padding-left: 50px;
+            position: relative;
+        }
+
+        .step::before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: var(--accent-gold);
+            color: var(--bg-primary);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .step h3 {
+            margin-bottom: 10px;
+        }
+
+        .proof-upload-area {
+            border: 2px dashed var(--border-color);
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+            margin-top: 30px;
+            transition: border-color 0.3s ease;
+        }
+
+        .proof-upload-area:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .proof-upload-area i {
+            font-size: 3rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        /* --- RODAPÉ --- */
+        .main-footer {
+            background-color: var(--bg-secondary);
+            padding: 40px 0 20px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        /* --- BOTÃO WHATSAPP FLUTUANTE --- */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+        }
+        
+        /* --- MODAL LOGIN/CADASTRO --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .close-modal:hover {
+            color: var(--accent-gold);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .auth-tab.active {
+            color: var(--accent-gold);
+            border-bottom-color: var(--accent-gold);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .auth-message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        .auth-message.error {
+            background-color: var(--error-color);
+            color: white;
+        }
+        .auth-message.success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .password-strength {
+            margin-top: 5px;
+            height: 5px;
+            border-radius: 3px;
+            background-color: var(--border-color);
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        .password-strength-bar.weak {
+            width: 33%;
+            background-color: var(--error-color);
+        }
+
+        .password-strength-bar.medium {
+            width: 66%;
+            background-color: var(--warning-color);
+        }
+
+        .password-strength-bar.strong {
+            width: 100%;
+            background-color: var(--success-color);
+        }
+          /* --- PÁGINA DE ADMINISTRAÇÃO --- */
+.admin-stats {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background-color: var(--bg-secondary);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+    flex: 1;
+}
+
+.stat-card h3 {
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+}
+
+.stat-card p {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--accent-gold);
+}
+
+.admin-actions {
+    margin-bottom: 20px;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.admin-table th, .admin-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.admin-table th {
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+.admin-user {
+    background-color: rgba(212, 175, 55, 0.1);
+}
+
+.admin-badge {
+    background-color: var(--accent-gold);
+    color: var(--bg-primary);
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 5px;
+}
+
+.user-details {
+    background-color: var(--bg-card);
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.user-details p {
+    margin-bottom: 10px;
+}
+
+.user-details h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+        /* --- RESPONSIVIDADE --- */
+        @media (max-width: 992px) {
+            .checkout-container, .account-dashboard, .game-detail-container {
+                grid-template-columns: 1fr;
+            }
+            .how-it-works-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .main-nav ul {
+                gap: 15px;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .catalog-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-bar input {
+                width: 100%;
+            }
+            
+            .search-bar input:focus {
+                width: 100%;
+            }
+
+            .cart-table, .orders-table {
+                font-size: 0.9rem;
+            }
+
+            .cart-item-info {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .games-grid, .wishlist-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+.admin-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.admin-tab {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.admin-tab.active {
+    color: var(--accent-gold);
+    border-bottom-color: var(--accent-gold);
+}
+    </style>
+</head>
+<body>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- HEADER -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">GV Games</div>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="#" onclick="showPage('home')">Início</a></li>
+                        <li><a href="#" onclick="showPage('catalog')">Catálogo</a></li>
+                        <li><a href="#" onclick="showPage('how-it-works')">Como Funciona</a></li>
+                        <li><a href="#" onclick="showPage('contact')">Contato</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" placeholder="Buscar jogos..." onkeyup="searchGames()">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="wishlist-icon" onclick="showPage('wishlist')">
+                        <i class="fas fa-heart"></i>
+                        <span class="wishlist-count" id="wishlistCount">0</span>
+                    </div>
+                    <div class="cart-icon" onclick="showPage('cart')">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </div>
+                    <div id="userArea" class="user-icon" onclick="openAuthModal()">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- PÁGINA INICIAL -->
+        <section id="home" class="page-content active">
+            <div class="hero-banner">
+                <div class="hero-content">
+                    <h1>Os Melhores Games, Preços Incríveis</h1>
+                    <p>Adquira suas mídias digitais de forma rápida e segura com a GV Games.</p>
+                    <a href="#" class="btn" onclick="showPage('catalog')">Ver Catálogo</a>
+                </div>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-gamepad"></i>
+                    <h3>Ampla Variedade</h3>
+                    <p>Os maiores lançamentos para PS4, PS5 e Xbox, sempre com os melhores preços.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-lock"></i>
+                    <h3>Compra Segura</h3>
+                    <p>Ambiente 100% seguro e processamento de dados protegidos para sua tranquilidade.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-rocket"></i>
+                    <h3>Entrega Imediata</h3>
+                    <p>Receba os dados da sua conta e instruções de ativação alugumas horas após a confirmação do pagamento.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fab fa-whatsapp"></i>
+                    <h3>Comunidade VIP</h3>
+                    <p>Participe da nossa comunidade, Receba ofertas exclusivas, seja o primeiro a saber sobre os novos lançamentos.</p>
+                    <!-- IMPORTANTE: Substitua o link abaixo pelo link do seu grupo do WhatsApp -->
+                    <a href="https://chat.whatsapp.com/KxrVFcYKqm6IA0LSekVNqM" target="_blank" class="btn" style="margin-top: 15px;">Entrar no Grupo</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA CATÁLOGO -->
+        <section id="catalog" class="page-content">
+            <h2 class="section-title">Nosso Catálogo de Jogos</h2>
+            <h3 class="section-subtitle">ainda não adicionamos todos os jogos no nosso catálogo caso o jogo que deseja não estiver aqui conferir disponibilidade no nosso grupo</h3>
+            <div class="catalog-controls">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterGames('all', this)">Todos</button>
+                    <button class="filter-btn" onclick="filterGames('PS5', this)">PS5</button>
+                    <button class="filter-btn" onclick="filterGames('PS4', this)">PS4</button>
+                    <button class="filter-btn" onclick="filterGames('Xbox', this)">Xbox</button>
+                </div>
+            </div>
+            <div class="games-grid" id="gamesGrid">
+                <!-- Jogos serão inseridos aqui via JavaScript -->
+            </div>
+        </section>
+
+        <!-- PÁGINA DETALHES DO JOGO -->
+        <section id="game-detail" class="page-content">
+            <div class="game-detail-container" id="gameDetailContainer">
+                <!-- Detalhes do jogo serão inseridos aqui via JavaScript -->
+            </div>
+            
+            <div class="reviews-section">
+                <div class="reviews-header">
+                    <h3>Avaliações</h3>
+                    <button class="add-review-btn" onclick="toggleReviewForm()">Adicionar Avaliação</button>
+                </div>
+                
+                <div class="reviews-list" id="reviewsList">
+                    <!-- Avaliações serão inseridas aqui via JavaScript -->
+                </div>
+                
+                <div class="review-form" id="reviewForm">
+                    <h4>Deixe sua avaliação</h4>
+                    <div class="form-group">
+                        <label>Sua nota</label>
+                        <div class="rating-input" id="ratingInput">
+                            <i class="fas fa-star star" data-rating="1"></i>
+                            <i class="fas fa-star star" data-rating="2"></i>
+                            <i class="fas fa-star star" data-rating="3"></i>
+                            <i class="fas fa-star star" data-rating="4"></i>
+                            <i class="fas fa-star star" data-rating="5"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reviewTitle">Título da avaliação</label>
+                        <input type="text" id="reviewTitle" required>
+                        <span class="error-message">Por favor, insira um título para sua avaliação</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="reviewText">Sua avaliação</label>
+                        <textarea id="reviewText" rows="4" required></textarea>
+                        <span class="error-message">Por favor, escreva sua avaliação</span>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn" onclick="submitReview()">Enviar Avaliação</button>
+                        <button type="button" class="btn btn-secondary" onclick="toggleReviewForm()">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA LISTA DE DESEJOS -->
+        <section id="wishlist" class="page-content">
+            <h2 class="section-title">Minha Lista de Desejos</h2>
+            <div class="wishlist-grid" id="wishlistGrid">
+                <!-- Jogos da lista de desejos serão inseridos aqui via JavaScript -->
+            </div>
+        </section>
+
+        <!-- PÁGINA COMO FUNCIONA -->
+        <section id="how-it-works" class="page-content">
+            <h2 class="section-title">Como Nosso Sistema Funciona</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto; color: var(--text-secondary);">
+                Oferecemos duas formas de acesso aos jogos para você escolher a que melhor se encaixa no seu perfil de gamer. Entenda a diferença:
+            </p>
+            <div class="how-it-works-grid">
+                <div class="account-type">
+                    <h3><i class="fas fa-crown"></i> Mídia Primária</h3>
+                    <p>A forma mais completa e conveniente de jogar.</p>
+                    <ul>
+                        <li>Você recebe os dados de uma conta nova ou dedicada.</li>
+                        <li>Ativa essa conta como "primária" no seu console.</li>
+                        <li>Jogue em seu próprio perfil, com todos os seus saves e conquistas.</li>
+                        <li>Não precisa estar conectado à internet para jogar (modo offline).</li>
+                        <li>Acesso total e irrestrito ao jogo.</li>
+                    </ul>
+                </div>
+                <div class="account-type">
+                    <h3><i class="fas fa-users"></i> Mídia Secundária</h3>
+                    <p>Uma alternativa econômica para quem joga online.</p>
+                    <ul>
+                        <li>Você utiliza os dados de uma conta compartilhada.</li>
+                        <li>Precisa estar logado nessa conta e conectado à internet para jogar.</li>
+                        <li>Ideal para quem quer experimentar o jogo por um preço menor.</li>
+                        <li>Os saves e progresso ficam vinculados à conta compartilhada.</li>
+                        <li>Perfeito para jogar online com amigos.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA CARRINHO -->
+        <section id="cart" class="page-content">
+            <h2 class="section-title">Seu Carrinho de Compras</h2>
+            <div id="cartContent">
+                <!-- Conteúdo do carrinho será inserido aqui via JavaScript -->
+            </div>
+        </section>
+
+        <!-- PÁGINA CHECKOUT -->
+        <section id="checkout" class="page-content">
+            <h2 class="section-title">Finalizar Compra</h2>
+            <div class="checkout-container">
+                <div class="checkout-form">
+                    <h3>Informações de Pagamento</h3>
+                    <h4>!!! no campo nome completo coloque o nome de quem fará o pagamento!!!</h4>
+                    <form id="paymentForm">
+                        <div class="form-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" required>
+                            <span class="error-message">Por favor, insira um e-mail válido</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="fullName">Nome Completo</label>
+                            <input type="text" id="fullName" required>
+                            <span class="error-message">Por favor, insira seu nome completo</span>
+                        </div>
+                         <div class="form-group">
+    <label for="platform">Plataforma do Jogo</label>
+    <select id="platform" name="platform">
+        <option value="PS4">PlayStation 4</option>
+        <option value="PS5">PlayStation 5 (+12%)</option>
+        <option value="Xbox">Xbox</option>
+    </select>
+</div>
+                        <div class="form-group">
+                            <label for="paymentMethod">Forma de Pagamento</label>
+                            <select id="paymentMethod">
+                                <option value="pix">Pix</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn" style="width: 100%; margin-top: 20px;">Ir para o Pagamento</button>
+                    </form>
+                </div>
+                <div class="order-summary">
+                    <h3>Resumo do Pedido</h3>
+                    <div id="checkoutSummary">
+                        <!-- Resumo do pedido será inserido aqui via JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- PÁGINA PAGAMENTO PIX -->
+        <section id="pix-payment" class="page-content">
+            <div class="pix-container">
+                <h2 class="section-title">Pague com Pix</h2>
+                <p>Escaneie o QR Code abaixo com o aplicativo do seu banco ou copie a chave Pix e COLOQUE O VALOR CORRESPONDENTE A SUA COMPRA.</p>
+                
+                <div class="pix-qr-code">
+                    <div id="qrcode"></div>
+                </div>
+
+                <div class="pix-details">
+                    <h3>Detalhes do Pagamento</h3>
+                    <div class="pix-pix-key">
+                        <span id="pixKey">kakawadud11@gmail.com</span>
+                        <button class="copy-btn" onclick="copyPixKey()">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                    <p><strong>Valor Total:</strong> <span id="pixTotalAmount">R$ 0,00</span></p>
+                    <p><strong>Identificador:</strong> <span id="pixOrderId">#00000</span></p>
+                </div>
+
+                <div class="pix-timer" id="pixTimerContainer">
+                    <p>Aguardando pagamento... <span id="pixTimer">05:00</span></p>
+                </div>
+
+                <div class="pix-actions">
+                    <button class="btn" id="confirmPaymentBtn" onclick="confirmPixPayment()">
+                        <i class="fas fa-check-circle"></i> Eu já realizei o pagamento
+                    </button>
+                    <button class="btn btn-secondary" onclick="showPage('cart')">Cancelar e voltar ao carrinho</button>
+                </div>
+            </div>
+        </section>
+<!-- PÁGINA PAGAMENTO PENDENTE -->
+<section id="payment-pending" class="page-content">
+    <div class="pix-container">
+        <i class="fas fa-clock" style="font-size: 4rem; color: var(--warning-color); margin-bottom: 20px;"></i>
+        <h2 class="section-title">Pagamento Registrado!</h2>
+        <p style="font-size: 1.1rem; margin-bottom: 20px;">Obrigado! Recebemos a informação do seu pagamento e ele está em análise.</p>
+        <p style="color: var(--text-secondary);">Enviaremos um e-mail com as instruções de ativação do seu jogo assim que a equipe da GV Games confirmar o pagamento. Este processo geralmente leva poucas horas.</p>
+        <div class="pix-actions">
+            <button class="btn btn-secondary" onclick="showPage('home')">Voltar para a Loja</button>
+        </div>
+    </div>
+</section>
+
+        <!-- PÁGINA MINHA CONTA -->
+        <section id="account" class="page-content">
+            <h2 class="section-title">Minha Conta</h2>
+            <div class="account-dashboard">
+                <div class="account-profile">
+                    <i class="fas fa-user-circle"></i>
+                    <h3 id="profileName">Carregando...</h3>
+                    <p id="profileEmail">carregando@email.com</p>
+                    <button class="btn btn-secondary" style="margin-top: 20px; width: 100%;" onclick="logout()">Sair da Conta</button>
+                </div>
+                <div class="account-orders">
+                    <h3>Meus Pedidos</h3>
+                    <div id="accountOrdersContent">
+                        <!-- Conteúdo dos pedidos será inserido aqui via JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA DE INSTRUÇÕES PÓS-COMPRA -->
+        <section id="instructions" class="page-content">
+            <div class="instructions-container">
+                <h2 id="instructionsMainTitle"><i class="fas fa-check-circle"></i> Pedido Realizado com Sucesso!</h2>
+                <p id="instructionsSubText" style="text-align: center; margin-bottom: 30px;">Obrigado por comprar na GV Games! Siga os passos abaixo para ativar seu jogo.</p>
+                
+                <div class="instructions-steps">
+                    <h3 style="color: var(--text-primary); margin-bottom: 20px;">Ativação de Conta Primária</h3>
+                    <div class="step">
+                        <h3>1. Faça o Login na Nova Conta</h3>
+                        <p>Na tela de login do seu console, insira o e-mail e a senha que enviamos para o seu e-mail cadastrado.</p>
+                    </div>
+                    <div class="step">
+                        <h3>2. Ative como Conta Primária</h3>
+                        <p>Vá em <strong>Configurações > Conta > Gerenciar Contas > Ativar como Primária</strong> neste console.</p>
+                    </div>
+                    <div class="step">
+                        <h3>3. Faça o Download do Jogo</h3>
+                        <p>Após ativar, acesse a <strong>Biblioteca de Jogos</strong> da conta e inicie o download do título adquirido.</p>
+                    </div>
+                    <div class="step">
+                        <h3>4. Volte para o seu Perfil</h3>
+                        <p>Feche a sessão da nova conta e faça login com o seu perfil pessoal. O jogo estará disponível na sua biblioteca para jogar online e offline.</p>
+                    </div>
+                </div>
+
+                <hr style="margin: 40px 0; border-color: var(--border-color);">
+                
+                <div class="instructions-steps">
+                    <h3 style="color: var(--text-primary); margin-bottom: 20px;">Ativação de Conta Secundária</h3>
+                    <div class="step">
+                        <h3>1. Faça o Login na Conta Compartilhada</h3>
+                        <p>Use os dados de login (e-mail e senha) que recebemos para acessar a conta no seu console.</p>
+                    </div>
+                    <div class="step">
+                        <h3>2. Verifique a Biblioteca</h3>
+                        <p>Na <strong>Biblioteca de Jogos</strong>, encontre o título que você comprou. Ele já deve estar disponível para download.</p>
+                    </div>
+                    <div class="step">
+                        <h3>3. Mantenha-se Conectado</h3>
+                        <p>Para jogar, você precisa permanecer logado nesta conta e com uma conexão ativa com a internet. O jogo não funcionará no modo offline.</p>
+                    </div>
+                </div>
+
+                <div class="proof-upload-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Envie seu Comprovante</h3>
+                    <p>Para acelerar o processo de envio dos dados, envie o comprovante de pagamento através do nosso WhatsApp.</p>
+                    <a href="https://wa.me/5561981488125?text=Ol%C3%A1%2C+enviei+o+comprovante+do+meu+pedido." target="_blank" class="btn" style="margin-top: 15px;">Enviar Comprovante</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA CONTATO -->
+        <section id="contact" class="page-content">
+            <h2 class="section-title">Fale Conosco</h2>
+            <p style="text-align: center; max-width: 600px; margin: 0 auto 30px; color: var(--text-secondary);">
+                Tem alguma dúvida? Precisa de suporte? Nossa equipe está pronta para te ajudar. Responderemos o mais rápido possível!
+            </p>
+            <div style="max-width: 600px; margin: 0 auto; background-color: var(--bg-secondary); padding: 30px; border-radius: 10px;">
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="contactName">Seu Nome</label>
+                        <input type="text" id="contactName" required>
+                        <span class="error-message">Por favor, insira seu nome</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactEmail">Seu E-mail</label>
+                        <input type="email" id="contactEmail" required>
+                        <span class="error-message">Por favor, insira um e-mail válido</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactSubject">Assunto</label>
+                        <input type="text" id="contactSubject" required>
+                        <span class="error-message">Por favor, insira um assunto</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactMessage">Mensagem</label>
+                        <textarea id="contactMessage" rows="5" required></textarea>
+                        <span class="error-message">Por favor, escreva sua mensagem</span>
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">Enviar Mensagem</button>
+                </form>
+            </div>
+        </section>
+    </main>
+<!-- PÁGINA DE ADMINISTRAÇÃO -->
+<!-- PÁGINA DE ADMINISTRAÇÃO -->
+<section id="admin" class="page-content">
+    <div class="admin-tabs">
+        <button class="admin-tab active" onclick="showAdminTab('users', this)">Usuários</button>
+        <button class="admin-tab" onclick="showAdminTab('orders', this)">Pedidos</button>
+    </div>
+    <div id="adminContent">
+        <!-- Conteúdo será inserido aqui via JavaScript -->
+    </div>
+</section>
+    <!-- RODAPÉ -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>GV Games</h3>
+                    <p>Sua loja confiável para jogos digitais com o melhor custo-benefício do mercado.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Links Úteis</h3>
+                    <ul>
+                        <li><a href="#" onclick="showPage('how-it-works')">Como Funciona</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Suporte</h3>
+                    <ul>
+                        <li><a href="#" onclick="showPage('contact')">Fale Conosco</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Redes Sociais</h3>
+                    <ul>
+                        <li><a href="https://www.tiktok.com/@gv.gamesofc" target="_blank"><i class="fab fa-tiktok"></i> TikTok</a></li>
+                        <li><a href="https://www.instagram.com/gvcontasdigitais?igsh=Zml0OTFlaWtrdDkx"><i class="fab fa-instagram"></i> Instagram</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 GV Games. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- BOTÃO WHATSAPP FLUTUANTE -->
+    <a href="https://wa.me/5561981488125?text=Ol%C3%A1%2C+gostaria+de+mais+informa%C3%A7%C3%B5es." target="_blank" class="whatsapp-float">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- MODAL LOGIN/CADASTRO -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeAuthModal()">&times;</span>
+            <div id="authMessage"></div>
+            <div class="auth-tabs">
+                <div class="auth-tab active" onclick="switchAuthTab('login', this)">Login</div>
+                <div class="auth-tab" onclick="switchAuthTab('register', this)">Cadastrar</div>
+            </div>
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label for="loginEmail">E-mail</label>
+                    <input type="email" id="loginEmail" required>
+                    <span class="error-message">Por favor, insira um e-mail válido</span>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Senha</label>
+                    <input type="password" id="loginPassword" required>
+                    <span class="error-message">Por favor, insira sua senha</span>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Entrar</button>
+            </form>
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="registerName">Nome Completo</label>
+                    <input type="text" id="registerName" required>
+                    <span class="error-message">Por favor, insira seu nome completo</span>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">E-mail</label>
+                    <input type="email" id="registerEmail" required>
+                    <span class="error-message">Por favor, insira um e-mail válido</span>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Senha</label>
+                    <input type="password" id="registerPassword" required>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                    </div>
+                    <span class="error-message">A senha deve ter pelo menos 6 caracteres</span>
+                </div>
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Confirmar Senha</label>
+                    <input type="password" id="registerConfirmPassword" required>
+                    <span class="error-message">As senhas não coincidem</span>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+// --- CONFIGURAÇÃO E INICIALIZAÇÃO ---
+
+// Configuração do EmailJS (em produção, use variáveis de ambiente)
+const EMAILJS_CONFIG = {
+    PUBLIC_KEY: "BGpfMq_wuQxTkn1sR",
+    SERVICE_ID: "Gvgames44",
+    TEMPLATE_ORDER: "template_e3oorvx",
+    TEMPLATE_CLIENT: "template_901j2ih",
+    TEMPLATE_CONTACT: "template_nqvk5he"
+};
+
+// Inicialização do EmailJS
+(function(){
+    emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+})();
+
+const gamesData = [
+// ... seus dados de jogos (mantive os mesmos)
+{ id: 1, name: "SilkSong", platform: "PS4 / PS5", cover: "https://upload.wikimedia.org/wikipedia/pt/8/86/Hollow_Knight_Silksong_cover.jpeg", description: "A aguardada sequência de Hollow Knight. Explore um novo reino e enfrente novos desafios.", pricePrimary: 79.90, priceSecondary: Math.ceil(79.90 * 0.80) },
+{ id: 2, name: "EA FC 26", platform: "PS4 / PS5", cover: "https://cdn1.epicgames.com/offer/1d4d85b1051e41ee8f1a099e99d59f3f/EGS_EASPORTSFC26StandardEdition_EACANADA_S2_1200x1600-effee280c00b9890a0c5249d4b0e5c97", description: "A mais nova edição do famoso jogo de futebol da EA Sports com gráficos e jogabilidade aprimorados.", pricePrimary: 89.90, priceSecondary: Math.ceil(89.90 * 0.80) },
+{ id: 3, name: "Red Dead Redemption 2", platform: "PS4 / PS5 / Xbox One", cover: "https://cdn.akamai.steamstatic.com/steam/apps/1174180/capsule_616x353.jpg?t=1718688439", description: "Vida de fora da lei no velho oeste americano em uma das maiores aventuras já criadas.", pricePrimary: 45.00, priceSecondary: Math.ceil(55.00 * 0.80) },
+{ id: 4, name: "EA FC 25", platform: "PS4 / PS5 / Xbox One", cover: "https://cdn1.epicgames.com/offer/b61e8ddd14e94619b7a74cf9d73f86b5/EGS_EASPORTSFC25StandardEdition_EACanada_S2_1200x1600-6e6b5c1d5d30e15b1dbdde721c6bc544", description: "Experimente a emoção do futebol com novas tecnologias e modos de jogo imersivos.", pricePrimary: 79.90, priceSecondary: Math.ceil(79.90 * 0.80) },
+{ id: 5, name: "GTA V", platform: "PS4 / PS5 / Xbox One", cover: "https://cdn.akamai.steamstatic.com/steam/apps/271590/capsule_616x353.jpg?t=1727774739", description: "Retorne ao mundo vibrante e perigoso de Los Santos em uma aventura épica de crime e ação.", pricePrimary: 45.00, priceSecondary: Math.ceil(45.00 * 0.80) },
+{ id: 6, name: "Grand Theft Auto The Trilogy", platform: "PS4", cover: "https://upload.wikimedia.org/wikipedia/pt/0/07/GTA_Trilogy_Definitive_Edition.png", description: "Reviva os clássicos GTA III, Vice City e San Andreas com visuais melhorados.", pricePrimary: 99.90, priceSecondary: Math.ceil(99.90 * 0.80) },
+{ id: 7, name: "PES 18", platform: "PS4", cover: "https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA08251_00/2/i_dc5d34ad79a8c6b26c9a04a1071215c6c4e3ec8656a51c51e3e85d5ef008d2e6/i/icon0.png", description: "Desfrute de uma experiência de futebol realista com foco em estratégia e controle de bola.", pricePrimary: 49.90, priceSecondary: Math.ceil(49.90 * 0.80) },
+{ id: 8, name: "God of War", platform: "PS4 / PS5", cover: "https://cdn.akamai.steamstatic.com/steam/apps/1593500/capsule_616x353.jpg?t=1698876872", description: "A jornada de Kratos no mundo nórdico, enfrentando deuses e monstros ao lado de seu filho, Atreus.", pricePrimary: 64.90, priceSecondary: Math.ceil(64.90 * 0.80) },
+{ id: 9, name: "Marvel's Spider-Man: Game of the Year Edition", platform: "PS4 / PS5", cover: "https://image.api.playstation.com/vulcan/img/rnd/202011/0714/YxnYgr7GHM0JVQRSrnOK35yr.png", description: "Jogue como o Homem-Aranha em uma aventura cheia de ação e emoção na Nova York.", pricePrimary: 64.90, priceSecondary: Math.ceil(64.90 * 0.80) },
+{ id: 10, name: "FIFA 24", platform: "PS4 / PS5", cover: "https://image.api.playstation.com/vulcan/ap/rnd/202408/0817/6df82a22b2aaaafaf21ff1d93db80241b3a0c2058273e2b7.png", description: "O jogo de futebol mais famoso do mundo com HyperMotionV e gráficos de nova geração.", pricePrimary: 59.90, priceSecondary: Math.ceil(59.90 * 0.80) },
+{ id: 11, name: "Hollow Knight", platform: "PS4", cover: "https://cdn.akamai.steamstatic.com/steam/apps/367520/capsule_616x353.jpg?t=1674055607", description: "Uma aventura desafiadora em um reino subterrâneo abandonado cheio de insetos e segredos.", pricePrimary: 56.90, priceSecondary: Math.ceil(56.90 * 0.80) },
+{ id: 12, name: "Bloodborne Complete Edition Bundle", platform: "PS4 / PS5", cover: "https://image.api.playstation.com/cdn/UP9000/CUSA00900_00/9EJsLXyKS0S1BRey5nwQBOuYr6EDRbGX.png", description: "Enfrente horrores lovecraftianos na cidade gótica de Yharnam neste RPG de ação intenso.", pricePrimary: 84.90, priceSecondary: Math.ceil(84.90 * 0.80) },
+{ id: 13, name: "The Last of Us Part II", platform: "PS5", cover: "https://upload.wikimedia.org/wikipedia/pt/9/96/The_Last_of_Us_2_capa.png", description: "A história brutal e emocionante de Ellie em um mundo pós-apocalíptico implacável.", pricePrimary: 90.00, priceSecondary: Math.ceil(90.00 * 0.80) },
+{ id: 14, name: "Minecraft", platform: "PS4", cover: "https://upload.wikimedia.org/wikipedia/pt/9/9c/Minecraft_capa.png", description: "Construa, explore e sobreviva em um mundo feito de blocos com infinitas possibilidades.", pricePrimary: 69.90, priceSecondary: Math.ceil(69.90 * 0.80) },
+{ id: 15, name: "Elden Ring", platform: "PS4", cover: "https://cdn.akamai.steamstatic.com/steam/apps/1245620/capsule_616x353.jpg?t=1727748428", description: "Uma nova fantasia de ação RPG criada pela FromSoftware em colaboração com George R. R. Martin.", pricePrimary: 70.00, priceSecondary: Math.ceil(70.00 * 0.80) },
+{ id: 16, name: "Cuphead", platform: "PS4 / PS5", cover: "https://image.api.playstation.com/vulcan/img/cfn/11307fllh6D-IvbpCa18N0vRggVeRYWA06paTNCj3DENJMScAzW2f3ry4IwFcXBAt9kWXdZGpGoOGjxJ_e9MdordMVAosNhZ.png", description: "Um jogo de ação e corrida clássico com estilo de desenhos animados dos anos 30.", pricePrimary: 40.00, priceSecondary: Math.ceil(40.00 * 0.80) },
+{ id: 17, name: "The Last of Us", platform: "PS5 / PS4", cover: "https://cdn1.epicgames.com/offer/0c40923dd1174a768f732a3b013dcff2/EGS_TheLastofUsPartI_NaughtyDogLLC_S2_1200x1600-41d1b88814bea2ee8cb7986ec24713e0", description: "A jornada de sobrevivência de Joel e Ellie em um mundo devastado por uma pandemia.", pricePrimary: 49.90, priceSecondary: 39.90 },
+{ id: 18, name: "Mortal Kombat 11", platform: "PS4 / PS5", cover: "https://cdn.akamai.steamstatic.com/steam/apps/976310/capsule_616x353.jpg?t=1698357702", description: "O combate mais brutal da franquia retorna com novos lutadores e fatalities espetaculares.", pricePrimary: 44.90, priceSecondary: Math.ceil(44.90 * 0.80) },
+{ id: 19, name: "Far Cry 5", platform: "PS4 / PS5 / Xbox", cover: "https://cdn.akamai.steamstatic.com/steam/apps/552520/capsule_616x353.jpg?t=1698358485", description: "Lide contra um culto apocalíptico no condado de Hope, Montana, em um mundo aberto caótico.", pricePrimary: 35.90, priceSecondary: Math.ceil(35.90 * 0.80) },
+{ id: 20, name: "Far Cry 6", platform: "PS4", cover: "https://image.api.playstation.com/vulcan/img/rnd/202106/1514/xqoTYwf0S55ro6fwcIIY1KI4.png", description: "Liberte a nação de Yara da ditadura de Anton Castillo em uma revolução tropical.", pricePrimary: 59.90, priceSecondary: Math.ceil(59.90 * 0.80) },
+{ id: 21, name: "Far Cry 4", platform: "PS4", cover: "https://cdn.akamai.steamstatic.com/steam/apps/298110/capsule_616x353.jpg?t=1698358392", description: "Explore as paisagens exuberantes de Kyrat e enfrente um rei tirânico em sua jornada.", pricePrimary: 33.90, priceSecondary: Math.ceil(33.90 * 0.80) },
+{ id: 22, name: "Far Cry Primal", platform: "PS4 / PS5 / Xbox", cover: "https://cdn1.epicgames.com/larkspur/offer/FCP_UCS17665_Store_Landscape_2560x1440-2560x1440-7d928100112e95b33030b81c65e632d3.jpg", description: "Viaje para a Idade da Pedra e lute pela sobrevivência como o caçador Takkar.", pricePrimary: 34.90, priceSecondary: Math.ceil(34.90 * 0.80) },
+{ id: 23, name: "Far Cry New Dawn", platform: "PS4 / Xbox", cover: "https://image.api.playstation.com/cdn/UP0001/CUSA13917_00/s2paV3Q5VGXYcup1gmnVzD0rmGWMeyfd.png?w=440", description: "Retorne a Hope County 17 anos após uma explosão nuclear em um mundo pós-apocalíptico colorido.", pricePrimary: 35.90, priceSecondary: Math.ceil(35.90 * 0.80) },
+{ id: 24, name: "FIFA 15 (Inglês)", platform: "PS4 / PS5", cover: "https://upload.wikimedia.org/wikipedia/pt/8/8e/FIFA_15_Xbox_One_capa_digital.png", description: "Versão em inglês do clássico FIFA 15, com foco no Ultimate Team e modos de carreira.", pricePrimary: 149.90, priceSecondary: Math.ceil(149.90 * 0.80) },
+{ id: 25, name: "FIFA 16 (Inglês)", platform: "PS4", cover: "https://upload.wikimedia.org/wikipedia/pt/2/27/FIFA_16_cover.jpg", description: "Versão em inglês do FIFA 16, apresentando inovações no gameplay e na inteligência artificial.", pricePrimary: 149.90, priceSecondary: Math.ceil(149.90 * 0.80) },
+{ id: 26, name: "FIFA 17", platform: "PS4 / PS5 / Xbox", cover: "https://imgproxy.eneba.games/gyn2OB1uW5wrfJkcvJOWdWj0bN5h1ZWE1CfWmOi5u-M/rs:fit:350/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy94/djd1cGpnemRvcDQw/dHZnenR0ZS5qcGc", description: "A história de Alex Hunter no modo Jornada, com gráficos aprimorados e mecânicas de jogo refinadas.", pricePrimary: 149.90, priceSecondary: Math.ceil(149.90 * 0.80) },
+{ id: 27, name: "FIFA 18", platform: "PS4 / PS5 / Xbox", cover: "https://imgproxy.eneba.games/olgZamMGCW_KHIk4OwMkrx7hezUZfwBuTseCoxHjcIY/rs:fit:350/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy95/YnZ4MHpjOG54a3Fv/cnBmampzcC5qcGc", description: "Continuação da jornada de Alex Hunter com novas equipes e modos de jogo aprimorados.", pricePrimary: 89.90, priceSecondary: Math.ceil(89.90 * 0.80) },
+{ id: 28, name: "FIFA 19", platform: "PS4 / PS5 / Xbox", cover: "https://cdn.cdkeys.com/496x700/media/catalog/product/f/i/fifa-19-pc-get-cheap-cd-key.jpg", description: "Apresenta a UEFA Champions League como licença oficial, com gráficos e jogabilidade melhorados.", pricePrimary: 110.90, priceSecondary: Math.ceil(110.90 * 0.80) },
+{ id: 29, name: "FIFA 20", platform: "PS4 / PS5 / Xbox", cover: "https://imgproxy.eneba.games/fY7AzUhlBrGoQx8JvwR_K9G9tV9ffi0g-U65Hf1YonY/rs:fit:350/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy9x/b0EyUW9qckZhcWc4/VnRmS1NFSm0xanNY/VS05VUVKSlNOZjJX/VHZNQmpFLmpwZWc", description: "Introduz o modo Volta Football, focado no futebol de rua, além de melhorias no gameplay.", pricePrimary: 24.90, priceSecondary: Math.ceil(24.90 * 0.80) },
+{ id: 30, name: "FIFA 21", platform: "PS4 / PS5", cover: "https://imgproxy.eneba.games/Gv-yXHYQuoAZc1Ezk-6nqRWzBIhTWCHBVZM4Ue7HpJs/rs:fit:350/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy9o/VDREUU5sbm45S0wz/eDAzcUdLN2w3MTdF/VERrU3IyLVRfd21i/RVZvaWNFLmpwZWc", description: "Tecnologia HyperMotion para movimentos mais realistas e melhorias nos modos de jogo.", pricePrimary: 29.90, priceSecondary: Math.ceil(29.90 * 0.80) },
+{ id: 31, name: "FIFA 23", platform: "PS4 / PS5", cover: "https://image.api.playstation.com/vulcan/ap/rnd/202301/0312/yM0eeJui8AFByeP5BC5XV5j9.png", description: "Última edição da série FIFA com recursos aprimorados de jogabilidade e modos de jogo expandidos.", pricePrimary: 29.90, priceSecondary: Math.ceil(29.90 * 0.80) },
+{ id: 32, name: "Detroit: Become Human", platform: "PS4", cover: "https://cdn.akamai.steamstatic.com/steam/apps/1222140/capsule_616x353.jpg?t=1698358445", description: "Uma aventura interativa onde suas decisões moldam o destino de três androides em Detroit.", pricePrimary: 45.90, priceSecondary: Math.ceil(45.90 * 0.80) },
+{ id: 33, name: "Call of Duty: Morden Warfare 2", platform: "PS4 / PS5", cover: "https://m.media-amazon.com/images/I/81mUtFXhFCL._AC_UF894,1000_QL80_.jpg", description: "Exoesqueletos futuristas e combate vertical em uma nova era da franquia Call of Duty.", pricePrimary: 89.90, priceSecondary: Math.ceil(89.90 * 0.80) },
+{ id: 34, name: "Call of Duty: Black Ops 3", platform: "PS4 / PS5", cover: "https://cdn.akamai.steamstatic.com/steam/apps/311210/capsule_616x353.jpg?t=1667000462", description: "Combate futurista com movimentos aprimorados, wall-running e um modo Zombies reimaginado.", pricePrimary: 55.90, priceSecondary: Math.ceil(55.90 * 0.80) },
+{ id: 35, name: "Call of Duty: Black Ops 4", platform: "PS4 / PS5", cover: "https://image.api.playstation.com/vulcan/img/cfn/11307mWaEjTEJ0S9Mvb64cBPBluyR6_ZLrGrDyjnj8U50MVUD4vvRZ7vT915N8GwntDoRJosrxIcYOjlPIkLtqqH_IQI4MlI.png", description: "Foco em multijogador com Battle Royale e modos Zombies exclusivos, sem campanha tradicional.", pricePrimary: 68.90, priceSecondary: Math.ceil(68.90 * 0.80) },
+{ id: 36, name: "Call of Duty: Ghosts Gold Edition", platform: "PS4", cover: "https://image.api.playstation.com/cdn/UP0002/CUSA00018_00/ESjgStO8XPuUfJiDPJHSeNNEvj3nEcmI.png?w=440", description: "Uma nova geração de combate com o novo motor gráfico e multiplayer dinâmico.", pricePrimary: 80.90, priceSecondary: Math.ceil(80.90 * 0.80) },
+{ id: 37, name: "Call of Duty: Infinite Warfare", platform: "PS4 / PS5", cover: "https://cdn.akamai.steamstatic.com/steam/apps/292730/capsule_616x353.jpg?t=1667000455", description: "Combate espacial com naves personalizáveis e uma campanha épica no espaço.", pricePrimary: 89.90, priceSecondary: Math.ceil(89.90 * 0.80) },
+{ id: 38, name: "Call of Duty: Modern Warfare 2019 (PT-BR)", platform: "PS4 / PS5", cover: "https://assetsio.gnwcdn.com/call-of-duty-modern-warfare-2019-lancamento-prestige-mapas-modos-1571743084734.jpg?width=1200&height=900&fit=crop&quality=100&format=png&enable=upscale&auto=webp", description: "Reinício da série Modern Warfare com gráficos realistas e uma campanha emocionante.", pricePrimary: 74.90, priceSecondary: Math.ceil(74.90 * 0.80) },
+{ id: 39, name: "Call of Duty: Modern Warfare Remastered", platform: "PS4 / PS5", cover: "https://image.api.playstation.com/cdn/UP0002/CUSA03522_00/t7SHaSjuUXFZ3VHl6U4FuSFrDMtkOIyP.png", description: "Versão remasterizada do clássico Modern Warfare com gráficos em alta definição.", pricePrimary: 74.90, priceSecondary: Math.ceil(74.90 * 0.80) },
+{ id: 40, name: "Call of Duty: World War II", platform: "PS4 / PS5", cover: "https://cdn.akamai.steamstatic.com/steam/apps/476600/capsule_616x353.jpg?t=1667000512", description: "Retorno às raízes da franquia com uma campanha ambientada na Segunda Guerra Mundial.", pricePrimary: 61.90, priceSecondary: Math.ceil(61.90 * 0.80) },
+{ id: 41, name: "Uncharted 4", platform: "PS4 / PS5", cover: "https://image.api.playstation.com/vulcan/img/rnd/202010/2620/gPTPUF3mT9FXELav8OKXmr9j.png", description: "A última aventura de Nathan Drake em busca de um tesouro pirata lendário.", pricePrimary: 95.90, priceSecondary: Math.ceil(95.90 * 0.80) },
+{ id: 42, name: "Mortal Kombat X", platform: "PS4 / PS5", cover: "https://cdn.akamai.steamstatic.com/steam/apps/307780/capsule_616x353.jpg?t=1667000525", description: "Combate brutal com novos personagens e fatalities espetaculares na décima edição da série.", pricePrimary: 35.90, priceSecondary: Math.ceil(35.90 * 0.80) },
+{ id: 43, name: "Spider-Man: Miles Morales", platform: "PS4 / PS5", cover: "https://cdn.akamai.steamstatic.com/steam/apps/1817190/capsule_616x353.jpg?t=1698358472", description: "Uma nova aventura do Homem-Aranha com Miles Morales como protagonista em Nova York.", pricePrimary: 119.90, priceSecondary: Math.ceil(119.90 * 0.80) },
+{ id: 44, name: "Tekken 7", platform: "PS4 / PS5", cover: "https://cdn.akamai.steamstatic.com/steam/apps/389730/capsule_616x353.jpg?t=1698358497", description: "O Rei dos Jogos de Luta retorna com gráficos impressionantes e uma história épica.", pricePrimary: 61.00, priceSecondary: Math.ceil(61.00 * 0.80) },
+{ id: 45, name: "Far Cry 3", platform: "PS4 / PS5 / Xbox", cover: "https://cdn.akamai.steamstatic.com/steam/apps/220240/capsule_616x353.jpg?t=1667000422", description: "Lute para sobreviver em uma ilha tropical infestada de piratas e criaturas selvagens.", pricePrimary: 29.90, priceSecondary: Math.ceil(29.90 * 0.80) },
+{ id: 46, name: "God of War III Remastered", platform: "PS4 / PS5", cover: "https://image.api.playstation.com/vulcan/img/rnd/202011/0711/p8JCvA8692BICXAPoyylh7ed.png", description: "A conclusão da trilogia original de God of War em gráficos 1080p e 60fps.", pricePrimary: 59.90, priceSecondary: Math.ceil(59.90 * 0.80) },
+{ id: 47, name: "Batman: Arkham Knight", platform: "PS4", cover: "https://cdn.akamai.steamstatic.com/steam/apps/208650/capsule_616x353.jpg?t=1667000549", description: "A conclusão da trilogia Arkham com o Batmóvel jogável e a ameaça do Coringa.", pricePrimary: 29.90, priceSecondary: Math.ceil(29.90 * 0.80) },
+{ id: 48, name: "UFC 3", platform: "PS4 / PS5", cover: "https://upload.wikimedia.org/wikipedia/en/f/fc/EA_Sports_UFC_3_Official_Boxart.jpg", description: "Experiência realista de MMA com um sistema de golpes aprimorado e modos de carreira expandidos.", pricePrimary: 58.90, priceSecondary: Math.ceil(58.90 * 0.80) },
+{ id: 49, name: "Resident Evil 7 Biohazard", platform: "PS4 / PS5", cover: "https://cdn.akamai.steamstatic.com/steam/apps/418370/capsule_616x353.jpg?t=1698358509", description: "Uma nova perspectiva em primeira pessoa na série Resident Evil com horror psicológico intenso.", pricePrimary: 60.00, priceSecondary: Math.ceil(60.00 * 0.80) },
+{ id: 50, name: "Resident Evil 2", platform: "PS4", cover: "https://cdn.akamai.steamstatic.com/steam/apps/883710/capsule_616x353.jpg?t=1698358522", description: "Remake completo do clássico Resident Evil 2 com gráficos modernos e jogabilidade aprimorada.", pricePrimary: 65.00, priceSecondary: Math.ceil(65.00 * 0.80) },
+{ id: 51, name: "Resident Evil Revelations 2", platform: "PS4 / PS5", cover: "https://cdn.akamai.steamstatic.com/steam/apps/287290/capsule_616x353.jpg?t=1698358535", description: "Continuação da história de Revelations com Claire Redfield e Barry Burton.", pricePrimary: 59.90, priceSecondary: Math.ceil(59.90 * 0.80) },
+{ id: 52, name: "Battlefield 1 Revolution", platform: "PS4 / PS5", cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1238840/capsule_616x353.jpg?t=1747168268", description: "Experiência de combate na Primeira Guerra Mundial com gráficos impressionantes e destruição massiva.", pricePrimary: 29.90, priceSecondary: Math.ceil(29.90 * 0.80) },
+{ id: 53, name: "Outlast", platform: "PS4", cover: "https://cdn1.epicgames.com/offer/78f42129096d4233bccc527733debfbd/EGS_Outlast_RedBarrels_S2_1200x1600-b02ebdfb4bcd3b1d608ab5b87257b3c4", description: "Experiência de terror psicológico em um manicômio abandonado com apenas uma câmera como defesa.", pricePrimary: 36.90, priceSecondary: Math.ceil(36.90 * 0.80) },
+{ id: 54, name: "Outlast 2", platform: "PS4", cover: "https://image.api.playstation.com/cdn/UP2113/CUSA06623_00/5vXtP0O5fmnnyrNnWAinTz57d04szG3b.png?w=440", description: "Sequência aterrorizante que leva você a uma vila isolada cheia de segredos sombrios.", pricePrimary: 54.90, priceSecondary: Math.ceil(54.90 * 0.80) },
+{ id: 55, name: "Horizon Zero Dawn Complete Edition", platform: "PS4 / PS5", cover: "https://cdn.akamai.steamstatic.com/steam/apps/1151640/capsule_616x353.jpg?t=1698358458", description: "Explore um mundo pós-apocalíptico habitado por máquinas gigantes como a caçadora Aloy.", pricePrimary: 60.90, priceSecondary: Math.ceil(60.90 * 0.80) },
+{ id: 56, name: "God of War Ragnarök", platform: "PS4", cover: "https://upload.wikimedia.org/wikipedia/pt/a/a5/God_of_War_Ragnar%C3%B6k_capa.jpg", description: "God of War Ragnarök é um jogo de ação e aventura que dá sequência à jornada de Kratos e seu filho Atreus pela mitologia nórdica. ", pricePrimary: 66.90, priceSecondary: Math.ceil(66.90 * 0.80) }
+
+];
+
+// --- ESTADO GLOBAL DA APLICAÇÃO ---
+let state = {
+    cart: [],
+    wishlist: [],
+    currentPage: 'home',
+    user: null,
+    filteredGames: [], // Será preenchido quando os jogos forem carregados
+    currentOrderId: null,
+    pixTimerInterval: null,
+    lastOrderCustomerName: null,
+    currentGameId: null,
+    reviews: {},
+    selectedRating: 0,
+    isAdmin: false,
+    customerNameForOrder: null,
+    // NOVA FUNCIONALIDADE: Variáveis para controle da plataforma e preço final no checkout
+    selectedPlatform: 'PS4', 
+    finalTotal: 0
+};
+
+// --- FUNÇÕES DE UTILIDADE ---
+
+// Sistema de notificações toast
+function showToast(message, type = 'success') {
+    const toastContainer = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icon = type === 'success' ? 'fa-check-circle' : 
+                type === 'error' ? 'fa-exclamation-circle' : 
+                'fa-info-circle';
+    
+    toast.innerHTML = `
+        <i class="fas ${icon}"></i>
+        <span>${message}</span>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideIn 0.3s ease reverse';
+        setTimeout(() => {
+            toast.remove();
+        },300);
+    },3000);
+}
+
+// Validação de e-mail
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+// Copiar para área de transferência
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('Chave Pix copiada com sucesso!', 'success');
+    }).catch(() => {
+        // Fallback para navegadores mais antigos
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showToast('Chave Pix copiada com sucesso!', 'success');
+    });
+}
+
+// Função para verificar a força da senha
+function checkPasswordStrength(password) {
+    let strength = 0;
+    
+    if (password.length >= 6) strength++;
+    if (password.length >= 10) strength++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^a-zA-Z0-9]/.test(password)) strength++;
+    
+    return Math.min(strength, 4);
+}
+
+// --- FUNÇÕES DE ARMAZENAMENTO ---
+function getUsersFromStorage() {
+    const users = localStorage.getItem('gvgames_users');
+    return users ? JSON.parse(users) : [];
+}
+
+function getOrdersFromStorage() {
+    const orders = localStorage.getItem('gvgames_orders');
+    return orders ? JSON.parse(orders) : [];
+}
+
+function getWishlistFromStorage() {
+    const wishlist = localStorage.getItem('gvgames_wishlist');
+    return wishlist ? JSON.parse(wishlist) : [];
+}
+
+function getReviewsFromStorage() {
+    const reviews = localStorage.getItem('gvgames_reviews');
+    return reviews ? JSON.parse(reviews) : {};
+}
+
+function saveUsersToStorage(users) {
+    localStorage.setItem('gvgames_users', JSON.stringify(users));
+}
+
+function saveOrder(order) {
+    const orders = getOrdersFromStorage();
+    
+    // Se o pedido não tiver o nome do usuário, mas tiver o email, tentamos obter o nome
+    if (!order.userName && order.userId) {
+        const users = getUsersFromStorage();
+        const user = users.find(u => u.email === order.userId);
+        if (user) {
+            order.userName = user.name;
+        }
+    }
+    
+    orders.push(order);
+    localStorage.setItem('gvgames_orders', JSON.stringify(orders));
+}
+
+function saveWishlist(wishlist) {
+    localStorage.setItem('gvgames_wishlist', JSON.stringify(wishlist));
+}
+
+function saveReviews(reviews) {
+    localStorage.setItem('gvgames_reviews', JSON.stringify(reviews));
+}
+
+// --- FUNÇÕES DE USUÁRIO E AUTENTICAÇÃO ---
+function showAuthMessage(text, type) {
+    const messageEl = document.getElementById('authMessage');
+    messageEl.textContent = text;
+    messageEl.className = `auth-message ${type}`;
+    messageEl.style.display = 'block';
+    setTimeout(() => {
+        messageEl.style.display = 'none';
+    }, 4000);
+}
+
+function isAdmin() {
+    return state.user && state.user.email === 'admin@gvgames.com';
+}
+
+function updateUserArea() {
+    const userArea = document.getElementById('userArea');
+    if (state.user) {
+        const adminLink = isAdmin() ? '<a href="#" onclick="showPage(\'admin\')" style="color: var(--accent-gold); margin-right: 10px;">Admin</a>' : '';
+        userArea.innerHTML = `
+            <div class="user-logged">
+                ${adminLink}
+                <a href="#" onclick="showPage('account')" style="color: var(--text-primary); margin-right: 10px;">Minha Conta</a>
+                <button class="btn-logout" onclick="logout()" title="Sair"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        `;
+        userArea.onclick = null;
+    } else {
+        userArea.innerHTML = `<i class="fas fa-user-circle"></i>`;
+        userArea.onclick = openAuthModal;
+    }
+}
+
+function logout() {
+    state.user = null;
+    updateUserArea();
+    showToast('Você saiu da sua conta.', 'success');
+    showPage('home');
+}
+
+// --- FUNÇÕES DE NAVEGAÇÃO E CONTROLE DE PÁGINAS ---
+function showPage(pageId, gameId = null) {
+    if (pageId === 'account') {
+        if (!state.user) { 
+            showToast('Por favor, faça login para acessar sua conta.', 'warning');
+            openAuthModal(); 
+            return; 
+        }
+        renderAccountPage();
+    }
+    
+    if (pageId === 'wishlist') {
+        renderWishlist();
+    }
+    
+    if (pageId === 'game-detail' && gameId) {
+        state.currentGameId = gameId;
+        renderGameDetail(gameId);
+        renderReviews(gameId);
+    }
+    
+    if (pageId === 'instructions') {
+        renderInstructionsPage();
+    }
+
+    if (pageId === 'admin') {
+        renderAdminPage();
+    }
+
+    document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    state.currentPage = pageId;
+    
+    if (pageId === 'cart') renderCart();
+    // MODIFICAÇÃO: Chama a função de atualização do resumo do checkout ao entrar na página
+    if (pageId === 'checkout') renderCheckoutSummary();
+    window.scrollTo(0, 0);
+}
+
+// --- FUNÇÕES DO CATÁLOGO ---
+function renderCatalog(gamesToRender = state.filteredGames) {
+    const gamesGrid = document.getElementById('gamesGrid');
+    gamesGrid.innerHTML = '';
+    if (gamesToRender.length === 0) {
+        gamesGrid.innerHTML = '<p style="text-align: center; width: 100%; color: var(--text-secondary);">Nenhum jogo encontrado.</p>';
+        return;
+    }
+    gamesToRender.forEach(game => {
+        const gameCard = document.createElement('div');
+        gameCard.className = 'game-card';
+        
+        const isInWishlist = state.wishlist.some(item => item.id === game.id);
+        const reviews = state.reviews[game.id] || [];
+        const avgRating = reviews.length > 0 
+            ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1)
+            : '0.0';
+        
+        gameCard.innerHTML = `
+            <img src="${game.cover}" alt="${game.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/616x353/222/fff?text=Imagem+Indisponível'">
+            <div class="game-card-content">
+                <h3>${game.name}</h3>
+                <span class="platform-badge">${game.platform}</span>
+                <div class="game-rating">
+                    <div class="stars">${generateStars(avgRating)}</div>
+                    <div class="rating-value">(${avgRating})</div>
+                </div>
+                <p>${game.description}</p>
+                <div class="game-actions">
+                    <button class="wishlist-btn ${isInWishlist ? 'in-wishlist' : ''}" onclick="toggleWishlist(${game.id})">
+                        <i class="${isInWishlist ? 'fas' : 'far'} fa-heart"></i>
+                    </button>
+                    <button class="btn btn-secondary" onclick="showPage('game-detail', ${game.id})">Ver Detalhes</button>
+                </div>
+                <div class="game-prices">
+                    <div class="price-group">
+                        <p>Primária</p>
+                        <span>R$ ${game.pricePrimary.toFixed(2)}</span>
+                    </div>
+                    <div class="buy-buttons">
+                        <button class="btn" onclick="addToCart(${game.id}, 'primary')">Comprar</button>
+                    </div>
+                </div>
+                <div class="game-prices" style="margin-top: 10px;">
+                    <div class="price-group">
+                        <p>Secundária</p>
+                        <span>R$ ${game.priceSecondary.toFixed(2)}</span>
+                    </div>
+                    <div class="buy-buttons">
+                        <button class="btn btn-secondary" onclick="addToCart(${game.id}, 'secondary')">Comprar</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        gamesGrid.appendChild(gameCard);
+    });
+}
+
+function filterGames(platform, buttonElement) {
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    buttonElement.classList.add('active');
+    if (platform === 'all') {
+        state.filteredGames = [...gamesData];
+    } else {
+        state.filteredGames = gamesData.filter(game => game.platform.includes(platform));
+    }
+    renderCatalog();
+}
+
+function searchGames() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    state.filteredGames = gamesData.filter(game => 
+        game.name.toLowerCase().includes(searchTerm) || 
+        game.platform.toLowerCase().includes(searchTerm)
+    );
+    renderCatalog();
+}
+
+// --- FUNÇÕES DE LISTA DE DESEJOS ---
+function toggleWishlist(gameId) {
+    const game = gamesData.find(g => g.id === gameId);
+    const existingIndex = state.wishlist.findIndex(item => item.id === gameId);
+    
+    if (existingIndex > -1) {
+        state.wishlist.splice(existingIndex, 1);
+        showToast(`${game.name} removido da lista de desejos`, 'success');
+    } else {
+        state.wishlist.push(game);
+        showToast(`${game.name} adicionado à lista de desejos`, 'success');
+    }
+    
+    saveWishlist(state.wishlist);
+    updateWishlistUI();
+    renderCatalog();
+}
+
+function updateWishlistUI() {
+    const wishlistCount = document.getElementById('wishlistCount');
+    wishlistCount.textContent = state.wishlist.length;
+}
+
+function renderWishlist() {
+    const wishlistGrid = document.getElementById('wishlistGrid');
+    
+    if (state.wishlist.length === 0) {
+        wishlistGrid.innerHTML = `
+            <div class="wishlist-empty">
+                <i class="far fa-heart"></i>
+                <h3>Sua lista de desejos está vazia</h3>
+                <p>Adicione jogos à sua lista de desejos para encontrá-los facilmente mais tarde.</p>
+                <a href="#" class="btn" onclick="showPage('catalog')">Explorar Catálogo</a>
+            </div>
+        `;
+        return;
+    }
+    
+    wishlistGrid.innerHTML = '';
+    state.wishlist.forEach(game => {
+        const gameCard = document.createElement('div');
+        gameCard.className = 'game-card';
+        
+        const reviews = state.reviews[game.id] || [];
+        const avgRating = reviews.length > 0 
+            ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1)
+            : '0.0';
+        
+        gameCard.innerHTML = `
+            <img src="${game.cover}" alt="${game.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/616x353/222/fff?text=Imagem+Indisponível'">
+            <div class="game-card-content">
+                <h3>${game.name}</h3>
+                <span class="platform-badge">${game.platform}</span>
+                <div class="game-rating">
+                    <div class="stars">${generateStars(avgRating)}</div>
+                    <div class="rating-value">(${avgRating})</div>
+                </div>
+                <p>${game.description}</p>
+                <div class="game-actions">
+                    <button class="wishlist-btn in-wishlist" onclick="toggleWishlist(${game.id})">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <button class="btn btn-secondary" onclick="showPage('game-detail', ${game.id})">Ver Detalhes</button>
+                </div>
+                <div class="game-prices">
+                    <div class="price-group">
+                        <p>Primária</p>
+                        <span>R$ ${game.pricePrimary.toFixed(2)}</span>
+                    </div>
+                    <div class="buy-buttons">
+                        <button class="btn" onclick="addToCart(${game.id}, 'primary')">Comprar</button>
+                    </div>
+                </div>
+                <div class="game-prices" style="margin-top: 10px;">
+                    <div class="price-group">
+                        <p>Secundária</p>
+                        <span>R$ ${game.priceSecondary.toFixed(2)}</span>
+                    </div>
+                    <div class="buy-buttons">
+                        <button class="btn btn-secondary" onclick="addToCart(${game.id}, 'secondary')">Comprar</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        wishlistGrid.appendChild(gameCard);
+    });
+}
+
+// --- FUNÇÕES DE DETALHES DO JOGO ---
+function renderGameDetail(gameId) {
+    const game = gamesData.find(g => g.id === gameId);
+    const gameDetailContainer = document.getElementById('gameDetailContainer');
+    
+    const isInWishlist = state.wishlist.some(item => item.id === gameId);
+    const reviews = state.reviews[gameId] || [];
+    const avgRating = reviews.length > 0 
+        ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1)
+        : '0.0';
+    
+    gameDetailContainer.innerHTML = `
+        <div class="game-detail-image">
+            <img src="${game.cover}" alt="${game.name}" onerror="this.src='https://via.placeholder.com/616x353/222/fff?text=Imagem+Indisponível'">
+        </div>
+        <div class="game-detail-info">
+            <h2>${game.name}</h2>
+            <span class="platform-badge">${game.platform}</span>
+            <p>${game.description}</p>
+            
+            <div class="game-detail-rating">
+                <div class="stars">${generateStars(avgRating)}</div>
+                <div class="rating-value">${avgRating}</div>
+                <div class="rating-count">(${reviews.length} ${reviews.length === 1 ? 'avaliação' : 'avaliações'})</div>
+            </div>
+            
+            <div class="game-detail-prices">
+                <div class="game-detail-price">
+                    <h4>Mídia Primária</h4>
+                    <div class="price">R$ ${game.pricePrimary.toFixed(2)}</div>
+                    <button class="btn" onclick="addToCart(${game.id}, 'primary')">Comprar</button>
+                </div>
+                <div class="game-detail-price">
+                    <h4>Mídia Secundária</h4>
+                    <div class="price">R$ ${game.priceSecondary.toFixed(2)}</div>
+                    <button class="btn btn-secondary" onclick="addToCart(${game.id}, 'secondary')">Comprar</button>
+                </div>
+            </div>
+            
+            <div class="game-detail-actions">
+                <button class="wishlist-btn ${isInWishlist ? 'in-wishlist' : ''}" onclick="toggleWishlist(${game.id})">
+                    <i class="${isInWishlist ? 'fas' : 'far'} fa-heart"></i>
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// --- FUNÇÕES DE AVALIAÇÕES ---
+function generateStars(rating) {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 >= 0.5 ? 1 : 0;
+    const emptyStars = 5 - fullStars - halfStar;
+    
+    let starsHTML = '';
+    
+    for (let i = 0; i < fullStars; i++) {
+        starsHTML += '<i class="fas fa-star"></i>';
+    }
+    
+    if (halfStar) {
+        starsHTML += '<i class="fas fa-star-half-alt"></i>';
+    }
+    
+    for (let i = 0; i < emptyStars; i++) {
+        starsHTML += '<i class="far fa-star"></i>';
+    }
+    
+    return starsHTML;
+}
+
+function toggleReviewForm() {
+    const reviewForm = document.getElementById('reviewForm');
+    reviewForm.classList.toggle('active');
+    
+    if (reviewForm.classList.contains('active')) {
+        document.getElementById('reviewTitle').value = '';
+        document.getElementById('reviewText').value = '';
+        state.selectedRating = 0;
+        updateRatingStars();
+        clearValidationErrors();
+    }
+}
+
+function updateRatingStars() {
+    const stars = document.querySelectorAll('#ratingInput .star');
+    stars.forEach((star, index) => {
+        if (index < state.selectedRating) {
+            star.classList.add('active');
+        } else {
+            star.classList.remove('active');
+        }
+    });
+}
+
+function renderReviews(gameId) {
+    const reviewsList = document.getElementById('reviewsList');
+    const reviews = state.reviews[gameId] || [];
+    
+    if (reviews.length === 0) {
+        reviewsList.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Seja o primeiro a avaliar este jogo!</p>';
+        return;
+    }
+    
+    reviewsList.innerHTML = '';
+    reviews.forEach(review => {
+        const reviewItem = document.createElement('div');
+        reviewItem.className = 'review-item';
+        
+        const date = new Date(review.date).toLocaleDateString('pt-BR');
+        
+        reviewItem.innerHTML = `
+            <div class="review-header">
+                <div class="review-author">${review.author}</div>
+                <div class="review-date">${date}</div>
+            </div>
+            <div class="review-rating">${generateStars(review.rating)}</div>
+            <h4>${review.title}</h4>
+            <div class="review-text">${review.text}</div>
+        `;
+        
+        reviewsList.appendChild(reviewItem);
+    });
+}
+
+function submitReview() {
+    if (!state.user) {
+        showToast('Para deixar uma avaliação, você precisa estar logado.', 'warning');
+        openAuthModal();
+        return;
+    }
+    
+    if (state.selectedRating === 0) {
+        showToast('Por favor, selecione uma nota para sua avaliação.', 'error');
+        return;
+    }
+    
+    const title = document.getElementById('reviewTitle').value.trim();
+    const text = document.getElementById('reviewText').value.trim();
+    
+    if (!title || !text) {
+        showToast('Por favor, preencha todos os campos da avaliação.', 'error');
+        return;
+    }
+    
+    if (!state.reviews[state.currentGameId]) {
+        state.reviews[state.currentGameId] = [];
+    }
+    
+    const newReview = {
+        author: state.user.name,
+        rating: state.selectedRating,
+        title: title,
+        text: text,
+        date: new Date().toISOString()
+    };
+    
+    state.reviews[state.currentGameId].push(newReview);
+    
+    saveReviews(state.reviews);
+    
+    renderReviews(state.currentGameId);
+    renderGameDetail(state.currentGameId);
+    
+    toggleReviewForm();
+    
+    showToast('Avaliação enviada com sucesso! Obrigado por compartilhar sua opinião.', 'success');
+}
+
+// --- FUNÇÕES DO CARRINHO ---
+function addToCart(gameId, type) {
+    const game = gamesData.find(g => g.id === gameId);
+    const price = type === 'primary' ? game.pricePrimary : game.priceSecondary;
+    const cartItem = { ...game, type: type, price: price, quantity: 1 };
+    const existingItemIndex = state.cart.findIndex(item => item.id === gameId && item.type === type);
+    if (existingItemIndex > -1) {
+        state.cart[existingItemIndex].quantity++;
+        showToast(`${game.name} (${type === 'primary' ? 'Primária' : 'Secundária'}) quantidade atualizada no carrinho`, 'success');
+    } else {
+        state.cart.push(cartItem);
+        showToast(`${game.name} (${type === 'primary' ? 'Primária' : 'Secundária'}) adicionado ao carrinho`, 'success');
+    }
+    updateCartUI();
+    showPage('cart');
+}
+
+function removeFromCart(index) {
+    const item = state.cart[index];
+    state.cart.splice(index, 1);
+    updateCartUI();
+    renderCart();
+    showToast(`${item.name} removido do carrinho`, 'success');
+}
+
+function updateQuantity(index, change) {
+    const newQuantity = state.cart[index].quantity + change;
+    if (newQuantity > 0) {
+        state.cart[index].quantity = newQuantity;
+    } else {
+        removeFromCart(index);
+        return;
+    }
+    updateCartUI();
+    renderCart();
+}
+
+function updateCartUI() {
+    const cartCount = document.getElementById('cartCount');
+    const totalItems = state.cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCount.textContent = totalItems;
+}
+
+function renderCart() {
+    const cartContent = document.getElementById('cartContent');
+    if (state.cart.length === 0) {
+        cartContent.innerHTML = '<p style="text-align: center;">Seu carrinho está vazio.</p>';
+        return;
+    }
+    let totalPrice = 0;
+    let cartHTML = `<table class="cart-table"><thead><tr><th>Produto</th><th>Tipo</th><th>Quantidade</th><th>Preço</th><th>Ações</th></tr></thead><tbody>`;
+    state.cart.forEach((item, index) => {
+        const itemTotal = item.price * item.quantity;
+        totalPrice += itemTotal;
+        cartHTML += `
+            <tr>
+                <td>
+                    <div class="cart-item-info">
+                        <img src="${item.cover}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/60x60/222/fff?text=Imagem'">
+                        <div><h4>${item.name}</h4><small>${item.platform}</small></div>
+                    </div>
+                </td>
+                <td>${item.type === 'primary' ? 'Primária' : 'Secundária'}</td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button class="btn btn-secondary" style="padding: 2px 8px;" onclick="updateQuantity(${index}, -1)">-</button>
+                        <span>${item.quantity}</span>
+                        <button class="btn btn-secondary" style="padding: 2px 8px;" onclick="updateQuantity(${index}, 1)">+</button>
+                    </div>
+                </td>
+                <td>R$ ${itemTotal.toFixed(2)}</td>
+                <td><button class="btn btn-secondary" style="padding: 5px 10px;" onclick="removeFromCart(${index})">Remover</button></td>
+            </tr>
+        `;
+    });
+    cartHTML += `</tbody></table><div class="cart-summary"><h3>Total: <span id="checkoutTotalPrice">R$ 0.00</span></h3><button class="btn" onclick="showPage('checkout')">Finalizar Compra</button></div>`;
+    cartContent.innerHTML = cartHTML;
+}
+
+// NOVA FUNCIONALIDADE: Reescrevendo a função para calcular o preço com base na plataforma
+function renderCheckoutSummary() {
+    const checkoutSummary = document.getElementById('checkoutSummary');
+    if (state.cart.length === 0) { checkoutSummary.innerHTML = '<p>Seu carrinho está vazio.</p>'; return; }
+
+    const platformSelect = document.getElementById('platform');
+    const selectedPlatform = platformSelect ? platformSelect.value : state.selectedPlatform;
+    
+    let baseTotal = 0;
+    let summaryHTML = `<table class="cart-table"><tbody>`;
+    state.cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        baseTotal += itemTotal;
+        summaryHTML += `<tr><td>${item.name} (${item.type === 'primary' ? 'Primária' : 'Secundária'}) x${item.quantity}</td><td>R$ ${itemTotal.toFixed(2)}</td></tr>`;
+    });
+
+    let finalTotal = baseTotal;
+    if (selectedPlatform === 'PS5') {
+        finalTotal = baseTotal * 1.12;
+    }
+    
+    state.finalTotal = finalTotal; // Armazena o preço final no estado global
+    state.selectedPlatform = selectedPlatform; // Armazena a plataforma selecionada
+
+    summaryHTML += `</tbody></table>`;
+    checkoutSummary.innerHTML = summaryHTML;
+
+    // Atualiza o preço total na tela
+    const totalPriceElement = document.getElementById('checkoutTotalPrice');
+    if (totalPriceElement) {
+        totalPriceElement.textContent = `R$ ${finalTotal.toFixed(2)}`;
+    }
+}
+
+// --- FUNÇÕES DO PAGAMENTO PIX ---
+function showPixPayment() {
+    if (state.cart.length === 0) return;
+    
+    if (!state.user) {
+        showToast('Para prosseguir com o pagamento, por favor, faça login na sua conta.', 'warning');
+        openAuthModal();
+        return;
+    }
+
+    // Usa o preço final calculado no checkout
+    const totalPrice = state.finalTotal;
+    const orderId = Date.now();
+    state.currentOrderId = orderId;
+    document.getElementById('pixTotalAmount').textContent = `R$ ${totalPrice.toFixed(2)}`;
+    document.getElementById('pixOrderId').textContent = `#${orderId}`;
+    const qrcodeContainer = document.getElementById("qrcode");
+    qrcodeContainer.innerHTML = "";
+    
+    // QR Code estático para evitar erros
+    new QRCode(qrcodeContainer, {
+        text: "00020126580014BR.GOV.BCB.PIX0136d91856f9-e09e-4e92-8929-ee938c3e08555204000053039865802BR5923Karam Karim Abdel Wadud6009SAO PAULO62140510IZ5Ol3JL1X63046F50",
+        width: 200, height: 200,
+        colorDark : "#000000", colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+    
+    startPixTimer();
+    showPage('pix-payment');
+}
+
+function copyPixKey() {
+    const pixKey = document.getElementById('pixKey').textContent;
+    copyToClipboard(pixKey);
+}
+
+function startPixTimer() {
+    let timeLeft = 3600; // 60 minutos
+    const confirmBtn = document.getElementById('confirmPaymentBtn');
+    const timerDisplay = document.getElementById('pixTimer');
+    const timerContainer = document.getElementById('pixTimerContainer');
+    
+    confirmBtn.disabled = false; 
+    confirmBtn.innerHTML = `<i class="fas fa-check-circle"></i> Eu já realizei o pagamento`;
+    timerContainer.classList.remove('expired');
+
+    clearInterval(state.pixTimerInterval);
+    state.pixTimerInterval = setInterval(() => {
+        if (timeLeft <= 0) {
+            clearInterval(state.pixTimerInterval);
+            timerDisplay.textContent = "Código expirado";
+            timerContainer.classList.add('expired');
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML = '<i class="fas fa-clock"></i> Pagamento expirado';
+            return;
+        }
+        
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        timeLeft--;
+    }, 1000);
+}
+
+async function confirmPixPayment() {
+    if (!state.user) {
+        showToast('Para confirmar o pagamento, você precisa estar logado.', 'warning');
+        return;
+    }
+
+    const submitBtn = document.getElementById('confirmPaymentBtn');
+    const originalBtnHTML = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span> Registrando...';
+
+    // Usa o preço final e a plataforma selecionada
+    const totalPrice = state.finalTotal;
+    const customerName = state.customerNameForOrder || state.user.name;
+    const customerEmail = state.user.email;
+    const orderId = Date.now();
+
+    const order = { 
+        orderId: orderId, 
+        userId: state.user.email,
+        userName: customerName,
+        // NOVA FUNCIONALIDADE: Salva a plataforma e o preço final no pedido
+        platform: state.selectedPlatform,
+        finalTotal: parseFloat(totalPrice.toFixed(2)),
+        date: new Date().toLocaleDateString('pt-BR'), 
+        items: [...state.cart], 
+        total: parseFloat(totalPrice.toFixed(2)), // Mantido para compatibilidade
+        status: 'Aguardando Confirmação'
+    };
+    saveOrder(order);
+    
+    state.lastOrderCustomerName = customerName;
+    clearInterval(state.pixTimerInterval);
+    state.cart = [];
+    updateCartUI();
+
+    // Envia e-mail apenas para o dono da loja avisando sobre o novo pedido
+    const orderDataForOwner = {
+        user_name: customerName,
+        user_email: customerEmail,
+        order_date: order.date,
+        order_id: `#${orderId}`,
+        // NOVA FUNCIONALIDADE: Inclui a plataforma no e-mail
+        platform: order.platform,
+        order_items: order.items.map(item => ({ 
+            name: item.name, 
+            type: item.type === 'primary' ? 'Primária' : 'Secundária', 
+            platform: item.platform, 
+            price: item.price.toFixed(2) 
+        })),
+        total_price: order.total.toFixed(2),
+        message: `NOVO PEDIDO - Aguardando Confirmação - ID: #${orderId}`
+    };
+
+    try {
+        await emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_ORDER, orderDataForOwner);
+        showToast('Pagamento registrado! Aguardando confirmação pela nossa equipe.', 'success');
+    } catch (error) {
+        console.error('Falha ao notificar o dono da loja:', error);
+        showToast('Pedido registrado. Entraremos em contato em breve.', 'warning');
+    }
+
+    showPage('payment-pending');
+    
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = originalBtnHTML;
+}
+
+// --- FUNÇÕES DA PÁGINA MINHA CONTA ---
+function renderAccountPage() {
+    document.getElementById('profileName').textContent = state.user.name;
+    document.getElementById('profileEmail').textContent = state.user.email;
+    const ordersContent = document.getElementById('accountOrdersContent');
+    const allOrders = getOrdersFromStorage();
+    const userOrders = allOrders.filter(order => order.userId === state.user.email);
+    if (userOrders.length === 0) {
+        ordersContent.innerHTML = '<p style="color: var(--text-secondary);">Você ainda não fez nenhum pedido.</p>';
+        return;
+    }
+    let ordersHTML = `<table class="orders-table"><thead><tr><th>ID do Pedido</th><th>Data</th><th>Itens</th><th>Total</th><th>Status</th></tr></thead><tbody>`;
+    userOrders.reverse().forEach(order => {
+        const itemsList = order.items.map(item => `${item.name} (${item.type === 'primary' ? 'P' : 'S'})`).join(', ');
+        ordersHTML += `
+            <tr>
+                <td>#${order.orderId}</td><td>${order.date}</td><td class="order-items-list">${itemsList}</td>
+                <td>R$ ${order.total.toFixed(2)}</td><td><span class="order-status paid">${order.status}</span></td>
+            </tr>
+        `;
+    });
+    ordersHTML += `</tbody></table>`;
+    ordersContent.innerHTML = ordersHTML;
+}
+
+function renderInstructionsPage() {
+    const titleEl = document.getElementById('instructionsMainTitle');
+    const subTextEl = document.getElementById('instructionsSubText');
+    if (state.lastOrderCustomerName) {
+        titleEl.innerHTML = `<i class="fas fa-check-circle"></i> Obrigado, ${state.lastOrderCustomerName}! Seu pedido foi confirmado.`;
+        subTextEl.textContent = "Agradecemos sua compra na GV Games! Siga os passos abaixo para ativar seu jogo.";
+        state.lastOrderCustomerName = null;
+    } else {
+        titleEl.innerHTML = `<i class="fas fa-check-circle"></i> Pedido Realizado com Sucesso!`;
+        subTextEl.textContent = "Obrigado por comprar na GV Games! Siga os passos abaixo para ativar seu jogo.";
+    }
+}
+
+// --- FUNÇÕES DE ADMINISTRAÇÃO ---
+function renderAdminPage() {
+    if (!isAdmin()) {
+        showToast('Acesso negado. Você não tem permissão de administrador.', 'error');
+        showPage('home');
+        return;
+    }
+
+    const adminContent = document.getElementById('adminContent');
+    const users = getUsersFromStorage();
+    
+    let usersHTML = `
+        <div class="admin-tab-content" style="display: block;">
+            <h2 class="section-title">Usuários Cadastrados</h2>
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <h3>Total de Usuários</h3>
+                    <p>${users.length}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Usuários Comuns</h3>
+                    <p>${users.filter(u => u.email !== 'admin@gvgames.com').length}</p>
+                </div>
+            </div>
+            <div class="admin-actions">
+                <button class="btn" onclick="exportUsers()">Exportar Lista de Usuários</button>
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Data de Cadastro</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+    
+    users.forEach((user, index) => {
+        const isAdminUser = user.email === 'admin@gvgames.com';
+        usersHTML += `
+            <tr class="${isAdminUser ? 'admin-user' : ''}">
+                <td>${index + 1}</td>
+                <td>${user.name} ${isAdminUser ? '<span class="admin-badge">Admin</span>' : ''}</td>
+                <td>${user.email}</td>
+                <td>${user.registrationDate || 'Desconhecida'}</td>
+                <td>
+                    <button class="btn btn-secondary" onclick="viewUserDetails('${user.email}')">Ver Detalhes</button>
+                    ${!isAdminUser ? `<button class="btn" style="background-color: var(--error-color);" onclick="deleteUser('${user.email}')">Excluir</button>` : ''}
+                </td>
+            </tr>
+        `;
+    });
+    
+    usersHTML += `
+                </tbody>
+            </table>
+        </div>
+    `;
+    
+    adminContent.innerHTML = usersHTML;
+}
+
+function showAdminTab(tabName, tabElement) {
+    document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.admin-tab-content').forEach(content => content.style.display = 'none');
+    
+    tabElement.classList.add('active');
+    
+    if (tabName === 'users') {
+        renderAdminPage();
+    } else if (tabName === 'orders') {
+        renderAdminOrdersPage();
+    }
+}
+
+// NOVA FUNCIONALIDADE: Atualizada para exibir a plataforma do pedido
+function renderAdminOrdersPage() {
+    const adminContent = document.getElementById('adminContent');
+    const allOrders = getOrdersFromStorage();
+    
+    let ordersHTML = `
+        <h2 class="section-title">Gerenciar Pedidos</h2>
+        <div class="admin-stats">
+            <div class="stat-card">
+                <h3>Total de Pedidos</h3>
+                <p>${allOrders.length}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Aguardando Confirmação</h3>
+                <p>${allOrders.filter(o => o.status === 'Aguardando Confirmação').length}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Pagamentos Confirmados</h3>
+                <p>${allOrders.filter(o => o.status === 'Pagamento Confirmado').length}</p>
+            </div>
+        </div>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID do Pedido</th>
+                    <th>Cliente (Nome)</th>
+                    <th>Plataforma</th> <!-- NOVA COLUNA -->
+                    <th>Data</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    // Ordena os pedidos mais recentes primeiro
+    allOrders.sort((a, b) => b.orderId - a.orderId).forEach(order => {
+        const isPending = order.status === 'Aguardando Confirmação';
+        const statusClass = isPending ? 'pending' : 'paid';
+        
+        ordersHTML += `
+            <tr class="${isPending ? 'admin-user' : ''}">
+                <td>#${order.orderId}</td>
+                <td>${order.userName || 'Nome não encontrado'} (${order.userId})</td>
+                <td>${order.platform || 'Não especificada'}</td> <!-- NOVA CÉLULA -->
+                <td>${order.date}</td>
+                <td>R$ ${order.total.toFixed(2)}</td>
+                <td><span class="order-status ${statusClass}">${order.status}</span></td>
+                <td>
+                    <button class="btn btn-secondary" onclick="viewOrderDetails('${order.orderId}')">Ver Detalhes</button>
+                    ${isPending ? `<button class="btn" onclick="confirmPaymentByAdmin('${order.orderId}')" style="margin-left: 5px;">Confirmar Pagamento</button>` : ''}
+                </td>
+            </tr>
+        `;
+    });
+    
+    ordersHTML += `
+            </tbody>
+        </table>
+    `;
+    
+    adminContent.innerHTML = ordersHTML;
+}
+
+function viewUserDetails(email) {
+    const users = getUsersFromStorage();
+    const user = users.find(u => u.email === email);
+    if (!user) return;
+    
+    const orders = getOrdersFromStorage().filter(order => order.userId === email);
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-modal" onclick="this.parentElement.parentElement.remove()">&times;</span>
+            <h2>Detalhes do Usuário</h2>
+            <div class="user-details">
+                <p><strong>Nome:</strong> ${user.name}</p>
+                <p><strong>E-mail:</strong> ${user.email}</p>
+                <p><strong>Data de Cadastro:</strong> ${user.registrationDate || 'Desconhecida'}</p>
+                <h3>Pedidos Realizados (${orders.length})</h3>
+                ${orders.length > 0 ? `
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>ID do Pedido</th>
+                                <th>Data</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${orders.map(order => `
+                                <tr>
+                                    <td>#${order.orderId}</td>
+                                    <td>${order.date}</td>
+                                    <td>R$ ${order.total.toFixed(2)}</td>
+                                    <td><span class="order-status paid">${order.status}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                ` : '<p>Nenhum pedido encontrado.</p>'}
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+// NOVA FUNCIONALIDADE: Atualizada para exibir a plataforma no modal de detalhes
+function viewOrderDetails(orderId) {
+    const allOrders = getOrdersFromStorage();
+    const order = allOrders.find(o => o.orderId == orderId);
+    if (!order) return;
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 700px;">
+            <span class="close-modal" onclick="this.parentElement.parentElement.remove()">&times;</span>
+            <h2>Detalhes do Pedido #${order.orderId}</h2>
+            <div class="user-details">
+                <p><strong>Cliente:</strong> ${order.userName || 'Nome não encontrado'} (${order.userId})</p>
+                <p><strong>Plataforma:</strong> ${order.platform || 'Não especificada'}</p> <!-- NOVA INFORMAÇÃO -->
+                <p><strong>Data:</strong> ${order.date}</p>
+                <p><strong>Total:</strong> R$ ${order.total.toFixed(2)}</p>
+                <p><strong>Status:</strong> <span class="order-status ${order.status === 'Aguardando Confirmação' ? 'pending' : 'paid'}">${order.status}</span></p>
+                <h3>Itens do Pedido</h3>
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Jogo</th>
+                            <th>Tipo</th>
+                            <th>Qtd</th>
+                            <th>Preço Unit.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${order.items.map(item => `
+                            <tr>
+                                <td>${item.name}</td>
+                                <td>${item.type === 'primary' ? 'Primária' : 'Secundária'}</td>
+                                <td>${item.quantity}</td>
+                                <td>R$ ${item.price.toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+async function confirmPaymentByAdmin(orderId) {
+    if (!confirm('Tem certeza que deseja confirmar este pagamento? O e-mail de ativação será enviado ao cliente.')) {
+        return;
+    }
+
+    const allOrders = getOrdersFromStorage();
+    const orderIndex = allOrders.findIndex(o => o.orderId == orderId);
+    
+    if (orderIndex === -1) return;
+
+    const order = allOrders[orderIndex];
+    order.status = 'Pagamento Confirmado';
+    
+    // Atualiza o pedido no localStorage
+    allOrders[orderIndex] = order;
+    localStorage.setItem('gvgames_orders', JSON.stringify(allOrders));
+
+    // Prepara e envia o e-mail para o cliente
+    const orderDataForClient = {
+        to_email: order.userId,
+        user_name: order.userName || 'Cliente',
+        order_id: `#${order.orderId}`,
+        order_items: order.items.map(item => `${item.name} (${item.type === 'primary' ? 'Primária' : 'Secundária'})`).join('<br>'),
+        total_price: `R$ ${order.total.toFixed(2)}`
+    };
+
+    try {
+        await emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_CLIENT, orderDataForClient);
+        showToast('Pagamento confirmado e e-mail enviado ao cliente com sucesso!', 'success');
+    } catch (error) {
+        console.error('Falha ao enviar e-mail para o cliente:', error);
+        showToast('Pagamento confirmado, mas houve um erro ao enviar o e-mail.', 'warning');
+    }
+
+    // Re-renderiza a tabela de pedidos para mostrar a mudança
+    renderAdminOrdersPage();
+}
+
+function deleteUser(email) {
+    if (!confirm(`Tem certeza que deseja excluir o usuário ${email}? Esta ação não pode ser desfeita.`)) {
+        return;
+    }
+    
+    const users = getUsersFromStorage();
+    const updatedUsers = users.filter(u => u.email !== email);
+    saveUsersToStorage(updatedUsers);
+    
+    showToast('Usuário excluído com sucesso.', 'success');
+    renderAdminPage();
+}
+
+function exportUsers() {
+    const users = getUsersFromStorage();
+    let csvContent = "ID,Nome,E-mail,Data de Cadastro\n";
+    
+    users.forEach((user, index) => {
+        csvContent += `${index + 1},"${user.name}","${user.email}","${user.registrationDate || 'Desconhecida'}"\n`;
+    });
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `usuarios_gvgames_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    
+    showToast('Lista de usuários exportada com sucesso.', 'success');
+}
+
+// Verificar se existe um usuário administrador, caso contrário, criar um
+function ensureAdminExists() {
+    const users = getUsersFromStorage();
+    const adminExists = users.some(u => u.email === 'admin@gvgames.com');
+    
+    if (!adminExists) {
+        const adminUser = {
+            name: 'Administrador',
+            email: 'admin@gvgames.com',
+            password: 'admin123',
+            registrationDate: new Date().toLocaleDateString('pt-BR')
+        };
+        users.push(adminUser);
+        saveUsersToStorage(users);
+        console.log('Usuário administrador criado: admin@gvgames.com / admin123');
+    }
+}
+
+// --- FUNÇÕES DE VALIDAÇÃO DE FORMULÁRIOS ---
+function clearValidationErrors(form) {
+    form.querySelectorAll('.form-group').forEach(group => {
+        group.classList.remove('error');
+    });
+}
+
+function validateField(field, validationFn, errorMessage) {
+    const formGroup = field.closest('.form-group');
+    const isValid = validationFn(field.value);
+    
+    if (!isValid) {
+        formGroup.classList.add('error');
+        return false;
+    } else {
+        formGroup.classList.remove('error');
+        return true;
+    }
+}
+
+// --- FUNÇÕES DE AUTENTICAÇÃO (MODAL) ---
+function openAuthModal() { 
+    document.getElementById('authModal').style.display = 'flex'; 
+}
+
+function closeAuthModal() {
+    document.getElementById('authModal').style.display = 'none';
+    document.getElementById('loginForm').reset();
+    document.getElementById('registerForm').reset();
+    document.getElementById('authMessage').style.display = 'none';
+    clearValidationErrors(document.getElementById('registerForm'));
+    clearValidationErrors(document.getElementById('loginForm'));
+}
+
+function switchAuthTab(tabName, tabElement) {
+    document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+    tabElement.classList.add('active');
+    document.getElementById(tabName + 'Form').classList.add('active');
+}
+
+// --- EVENT LISTENERS ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Garantir que o usuário administrador exista
+    ensureAdminExists();
+    
+    // Carrega dados do localStorage
+    state.wishlist = getWishlistFromStorage();
+    state.reviews = getReviewsFromStorage();
+    
+    // IMPORTANTE: Certifique-se de que a variável `gamesData` foi definida antes desta linha
+    if (typeof gamesData !== 'undefined') {
+        state.filteredGames = [...gamesData];
+        renderCatalog();
+    } else {
+        console.error("A variável 'gamesData' não foi encontrada. O catálogo não pode ser renderizado.");
+        const gamesGrid = document.getElementById('gamesGrid');
+        if (gamesGrid) {
+            gamesGrid.innerHTML = '<p style="text-align: center; width: 100%; color: var(--text-secondary);">Erro ao carregar o catálogo de jogos. Verifique o console.</p>';
+        }
+    }
+
+    updateCartUI();
+    updateWishlistUI();
+    updateUserArea();
+    
+    // Configuração do formulário de avaliação
+    const ratingStars = document.querySelectorAll('#ratingInput .star');
+    ratingStars.forEach(star => {
+        star.addEventListener('click', function() {
+            state.selectedRating = parseInt(this.dataset.rating);
+            updateRatingStars();
+        });
+    });
+    
+    // Validação de força de senha
+    const passwordInput = document.getElementById('registerPassword');
+    const passwordStrengthBar = document.getElementById('passwordStrengthBar');
+    
+    passwordInput.addEventListener('input', function() {
+        const strength = checkPasswordStrength(this.value);
+        passwordStrengthBar.className = 'password-strength-bar';
+        
+        if (strength <= 2) {
+            passwordStrengthBar.classList.add('weak');
+        } else if (strength <= 3) {
+            passwordStrengthBar.classList.add('medium');
+        } else {
+            passwordStrengthBar.classList.add('strong');
+        }
+    });
+    
+    // Login form
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        clearValidationErrors(e.target);
+        
+        const email = document.getElementById('loginEmail');
+        const password = document.getElementById('loginPassword');
+        
+        let isValid = true;
+        isValid = validateField(email, validateEmail, 'E-mail inválido') && isValid;
+        isValid = validateField(password, val => val.length >= 6, 'Senha deve ter pelo menos 6 caracteres') && isValid;
+        
+        if (!isValid) return;
+        
+        const users = getUsersFromStorage();
+        const foundUser = users.find(u => u.email === email.value && u.password === password.value);
+        
+        if (foundUser) {
+            state.user = foundUser;
+            showAuthMessage('Login realizado com sucesso!', 'success');
+            setTimeout(() => { 
+                closeAuthModal(); 
+                updateUserArea(); 
+                showPage('home'); 
+            }, 1500);
+        } else {
+            showAuthMessage('E-mail ou senha incorretos.', 'error');
+        }
+    });
+    
+    // Register form
+    document.getElementById('registerForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        clearValidationErrors(e.target);
+        
+        const name = document.getElementById('registerName');
+        const email = document.getElementById('registerEmail');
+        const password = document.getElementById('registerPassword');
+        const confirmPassword = document.getElementById('registerConfirmPassword');
+        
+        let isValid = true;
+        isValid = validateField(name, val => val.length >= 3, 'Nome deve ter pelo menos 3 caracteres') && isValid;
+        isValid = validateField(email, validateEmail, 'E-mail inválido') && isValid;
+        isValid = validateField(password, val => val.length >= 6, 'Senha deve ter pelo menos 6 caracteres') && isValid;
+        isValid = validateField(confirmPassword, val => val === password.value, 'As senhas não coincidem') && isValid;
+        
+        if (!isValid) return;
+        
+        const users = getUsersFromStorage();
+        if (users.some(u => u.email === email.value)) {
+            showAuthMessage('Este e-mail já está cadastrado.', 'error');
+            return;
+        }
+        
+        const newUser = { 
+            name: name.value, 
+            email: email.value, 
+            password: password.value,
+            registrationDate: new Date().toLocaleDateString('pt-BR')
+        };
+        users.push(newUser);
+        saveUsersToStorage(users);
+        
+        showAuthMessage('Cadastro realizado com sucesso! Faça o login.', 'success');
+        setTimeout(() => { 
+            switchAuthTab('login', document.querySelector('.auth-tab')); 
+        }, 2000);
+    });
+    
+    // NOVA FUNCIONALIDADE: Event listener para a mudança de plataforma no checkout
+    const platformSelect = document.getElementById('platform');
+    if(platformSelect) {
+        platformSelect.addEventListener('change', renderCheckoutSummary);
+    }
+
+    // Payment form
+    document.getElementById('paymentForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        clearValidationErrors(e.target);
+        
+        const email = document.getElementById('email');
+        const fullName = document.getElementById('fullName');
+        
+        let isValid = true;
+        isValid = validateField(email, validateEmail, 'E-mail inválido') && isValid;
+        isValid = validateField(fullName, val => val.length >= 3, 'Nome deve ter pelo menos 3 caracteres') && isValid;
+        
+        if (!isValid) return;
+
+        // Armazena o nome completo do formulário de pagamento no estado global.
+        state.customerNameForOrder = fullName.value;
+        
+        const paymentMethod = document.getElementById('paymentMethod').value;
+        if (paymentMethod === 'pix') {
+            showPixPayment();
+        } else {
+            showToast('Forma de pagamento ainda não implementada. Por favor, escolha Pix.', 'warning');
+        }
+    });
+    
+    // Contact form
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearValidationErrors(e.target);
+        
+        const name = document.getElementById('contactName');
+        const email = document.getElementById('contactEmail');
+        const subject = document.getElementById('contactSubject');
+        const message = document.getElementById('contactMessage');
+        
+        let isValid = true;
+        isValid = validateField(name, val => val.length >= 3, 'Nome deve ter pelo menos 3 caracteres') && isValid;
+        isValid = validateField(email, validateEmail, 'E-mail inválido') && isValid;
+        isValid = validateField(subject, val => val.length >= 3, 'Assunto deve ter pelo menos 3 caracteres') && isValid;
+        isValid = validateField(message, val => val.length >= 10, 'Mensagem deve ter pelo menos 10 caracteres') && isValid;
+        
+        if (!isValid) return;
+        
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner"></span> Enviando...';
+        
+        const contactData = {
+            from_name: name.value,
+            from_email: email.value,
+            subject: subject.value,
+            message: message.value
+        };
+        
+        try {
+            await emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_CONTACT, contactData);
+            showToast('Mensagem enviada com sucesso! Entraremos em contato em breve.', 'success');
+            e.target.reset();
+        } catch (error) {
+            console.error('Falha ao enviar o e-mail:', error);
+            showToast('Ocorreu um erro ao enviar sua mensagem. Por favor, tente novamente.', 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Enviar Mensagem';
+        }
+    });
+    
+    window.onclick = function(event) {
+        const modal = document.getElementById('authModal');
+        if (event.target == modal) closeAuthModal();
+    }
+});
+</script>
+</body>
+</html>
